@@ -42,7 +42,7 @@ while True:
             date = post['date'] if post['date'] > date else date
 
             post_text = 'post_{} text\n'.format(counter) + post['text']
-            link = group_link + 'w=wall' + group_id + '_' + str(post['id'])
+            link = group_link + '?w=wall' + group_id + '_' + str(post['id'])
             message = message + '\n\n*********************\n\n' + post_text + '\n' + link
             counter += 1
 
