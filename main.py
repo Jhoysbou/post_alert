@@ -2,7 +2,7 @@ import random
 import time
 import re
 import vk_api
-from Constants import service_key, bot_token, user_id, words, group_link, group_id
+from Constants import service_key, bot_token, user_id, key_words, group_link, group_id
 from getNewPost import NewPostDetector
 
 MAX_INT = 9223372036854775807
@@ -12,8 +12,9 @@ def getNextRandom():
     return random.randint(-MAX_INT - 1, MAX_INT)
 
 
-def write_msg(message):
-    vk_bot.method('messages.send', {'user_id': user_id, 'message': message, 'random_id': getNextRandom()})
+def write_msg(text, user_id):
+    for user in user_id:
+        vk_bot.method('messages.send', {'user_id': user, 'message': text, 'random_id': getNextRandom()})
 
 
 vk_session = vk_api.VkApi(token=service_key)
@@ -28,7 +29,7 @@ while True:
     date = 0
 
     for post in new_posts:
-        if re.findall(words, post['text']):
+        if re.findall(key_words, post['text']):
             posts_to_show.append(post)
 
     length = len(posts_to_show)
@@ -46,7 +47,7 @@ while True:
             message = message + '\n\n*********************\n\n' + post_text + '\n' + link
             counter += 1
 
-        write_msg(message)
+        write_msg(message, user_id)
         detector.update_prev_date(date)
 
     time.sleep(DELAY)
