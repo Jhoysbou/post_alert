@@ -13,8 +13,9 @@ def getNextRandom():
 
 
 def write_msg(text, user_id):
-    for user in user_id:
-        vk_bot.method('messages.send', {'user_id': user, 'message': text, 'random_id': getNextRandom()})
+    print('message sent')
+    # for user in user_id:
+    #     vk_bot.method('messages.send', {'user_id': user, 'message': text, 'random_id': getNextRandom()})
 
 
 vk_session = vk_api.VkApi(token=service_key)
@@ -24,30 +25,33 @@ vk_bot = vk_api.VkApi(token=bot_token)
 detector = NewPostDetector(vk=vk_get_posts)
 
 while True:
-    new_posts = detector.get_new_posts()
-    posts_to_show = []
-    date = 0
+    try:
+        new_posts = detector.get_new_posts()
+        posts_to_show = []
+        date = 0
 
-    for post in new_posts:
-        if re.findall(key_words, post['text']):
-            posts_to_show.append(post)
+        for post in new_posts:
+            if re.findall(key_words, post['text']):
+                posts_to_show.append(post)
 
-    length = len(posts_to_show)
-    if length:
-        message = '''
-        New posts!!\n Number: {} 
-        '''.format(length)
-        counter = 1
+        length = len(posts_to_show)
+        if length:
+            message = '''
+            New posts!!\n Number: {} 
+            '''.format(length)
+            counter = 1
 
-        for post in posts_to_show:
-            date = post['date'] if post['date'] > date else date
+            for post in posts_to_show:
+                date = post['date'] if post['date'] > date else date
 
-            post_text = 'post_{} text\n'.format(counter) + post['text']
-            link = group_link + '?w=wall' + group_id + '_' + str(post['id'])
-            message = message + '\n\n*********************\n\n' + post_text + '\n' + link
-            counter += 1
+                post_text = 'post_{} text\n'.format(counter) + post['text']
+                link = group_link + '?w=wall' + group_id + '_' + str(post['id'])
+                message = message + '\n\n*********************\n\n' + post_text + '\n' + link
+                counter += 1
 
-        write_msg(message, user_id)
-        detector.update_prev_date(date)
+            write_msg(message, user_id)
+            detector.update_prev_date(date)
 
-    time.sleep(DELAY)
+        time.sleep(DELAY)
+    except vk_api.VkAudioException:
+        pass
