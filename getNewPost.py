@@ -1,4 +1,5 @@
 import vk_api
+import datetime
 from Constants import group_id
 
 
@@ -21,7 +22,12 @@ class NewPostDetector:
 
     def get_new_posts(self):
         new_posts = []
-        response = self.vk.wall.get(owner_id=group_id, count=self.number_of_posts)
+        try:
+            response = self.vk.wall.get(owner_id=group_id, count=self.number_of_posts)
+        except vk_api.exceptions.ApiHttpError:
+            print('vk_api.exceptions.ApiHttpError at ' + str(datetime.datetime.now()))
+            pass
+
 
         for post in response['items']:
             if post['date'] > self.prev_date:
