@@ -1,4 +1,4 @@
-###Script that will notify you for a new post in a particular group.
+### Script that will notify you for a new post in a particular group.
 If you define key words it will send you posts only with these key words.
 
 To set up \
